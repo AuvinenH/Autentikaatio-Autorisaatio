@@ -1,9 +1,6 @@
+using AutentikaatioAutorisaatio.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace AutentikaatioAutorisaatio.Controllers
 {
@@ -17,10 +14,12 @@ namespace AutentikaatioAutorisaatio.Controllers
         };
 
         private readonly ILogger<WeatherForecastController> _logger;
+        private readonly TokenService _tokenService;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, TokenService tokenService)
         {
             _logger = logger;
+            _tokenService = tokenService;
         }
 
         [AllowAnonymous]
@@ -43,11 +42,24 @@ namespace AutentikaatioAutorisaatio.Controllers
         {
             if (credentials.Username == "testuser" && credentials.Password == "testpassword")
             {
-                var token = GenerateToken(credentials.Username);
+                var token = _tokenService.GenerateToken(credentials.Username, false);
                 return Ok(new { Token = token });
             }
 
-            return Unauthorized("Kayttajatunnus tai salasana on vaarin.");
+            if (credentials.Username == "admin" && credentials.Password == "adminpassword")
+            {
+                var token = _tokenService.GenerateToken(credentials.Username, true);
+                return Ok(new { Token = token });
+            }
+
+            return Unauthorized("Käyttäjätunnus tai salasana on väärin.");
+        }
+
+        [Authorize(Policy = "RequireAdminRole")]
+        [HttpGet("GetSecret")]
+        public IActionResult GetSecretData()
+        {
+            return Ok("Tama on suojattua tietoa vain Admin-roolia käyttaviltä.");
         }
 
         private static IEnumerable<WeatherForecast> CreateForecasts()
@@ -60,26 +72,6 @@ namespace AutentikaatioAutorisaatio.Controllers
                     Summary = Summaries[Random.Shared.Next(Summaries.Length)]
                 })
                 .ToArray();
-        }
-
-        private static string GenerateToken(string username)
-        {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("your_secret_key_that_is_at_least_32_bytes_long"));
-            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-            var claims = new[]
-            {
-                new Claim(ClaimTypes.Name, username)
-            };
-
-            var token = new JwtSecurityToken(
-                issuer: "MyTestAuthServer",
-                audience: "MyTestApiUsers",
-                claims: claims,
-                expires: DateTime.UtcNow.AddHours(1),
-                signingCredentials: credentials);
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
         public class UserCredentials

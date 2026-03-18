@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AutentikaatioAutorisaatio")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d498b1339c83f17aefd144d4b089647ef60965fd")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b7bcc21ed70fa4d62c4f9e0a0331622a3ec0c233")]
 [assembly: System.Reflection.AssemblyProductAttribute("AutentikaatioAutorisaatio")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AutentikaatioAutorisaatio")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
