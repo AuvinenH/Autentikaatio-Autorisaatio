@@ -1,0 +1,27 @@
+# Build output
+bin/
+obj/
+out/
+
+# User-specific files
+*.user
+*.rsuser
+*.suo
+
+# IDE/editor folders
+.vs/
+.vscode/
+
+# Logs and diagnostics
+*.log
+
+# NuGet
+*.nupkg
+*.snupkg
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+
+# Local app settings overrides (keep template config in repo)
+appsettings.Local.json
